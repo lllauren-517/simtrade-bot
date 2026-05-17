@@ -1,0 +1,21 @@
+name: Update Stock Prices
+on:
+  schedule:
+    - cron: '*/30 * * * *' # 每 30 分鐘更新一次
+  workflow_dispatch:
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js yahoo-finance2
+      - name: Run update script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node update_prices.js
